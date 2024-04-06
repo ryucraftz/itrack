@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "921892674774",
+    "project_id": "itrack-ff8cb",
+    "storage_bucket": "itrack-ff8cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921892674774:android:df25a60ae36a354fe93d77",
+        "android_client_info": {
+          "package_name": "com.example.itrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx6OWJsd4eweM3m94h762YvqnPscZ-9x8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

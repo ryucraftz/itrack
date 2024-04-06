@@ -53,7 +53,7 @@ class _StartPageState extends State<StartPage> {
                   ),
                   const Spacer(),
                   Text(
-                    'Created by Sivanandh',
+                    'Created by Ryucraftz',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       color: const Color(0xFF063166),

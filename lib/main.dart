@@ -5,6 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:itrack/firebase_options.dart';
 import 'package:location/location.dart' as loc;
 import 'package:itrack/services/auth_service.dart';
 import 'package:itrack/services/wrapper.dart';
@@ -17,7 +18,7 @@ late DatabaseReference dbReference;
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   spInstance = await SharedPreferences.getInstance();
   dbReference = FirebaseDatabase.instance.ref();

@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 
 class AddClass extends StatefulWidget {
-  const AddClass({Key? key}) : super(key: key);
+  const AddClass({super.key});
 
   @override
   State<AddClass> createState() => _AddClassState();
