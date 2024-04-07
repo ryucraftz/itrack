@@ -70,7 +70,7 @@ class _AddQueriesState extends State<AddQueries> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
                         Text(
-                          "BCA/5/B",
+                          "SE/COMP/B",
                           style: TextStyle(fontSize: 14, color: Colors.black),
                         ),
                         SizedBox(

@@ -4,7 +4,7 @@ import 'package:itrack/screens/start_page.dart';
 import 'package:itrack/screens/login_page.dart';
 
 class Wrapper extends StatelessWidget {
-  const Wrapper({Key? key}) : super(key: key);
+  const Wrapper({super.key});
 
   @override
   Widget build(BuildContext context) {

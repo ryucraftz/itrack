@@ -6,9 +6,10 @@ import 'package:line_icons/line_icons.dart';
 import 'package:itrack/models/globals.dart' as globals;
 import 'package:intl/intl.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class AddClass extends StatefulWidget {
-  const AddClass({super.key});
+  const AddClass({Key? key}) : super(key: key);
 
   @override
   State<AddClass> createState() => _AddClassState();
@@ -17,43 +18,35 @@ class AddClass extends StatefulWidget {
 class _AddClassState extends State<AddClass> {
   final dateToday = DateTime.now();
 
-  getDate() {
+  String getDate() {
     String formattedDate = DateFormat.yMMMMd('en_US').format(dateToday);
     return formattedDate;
   }
 
-  String pickedTime = "HH:MM";
-  String amORpm = 'AM';
-  String hh = 'HH';
-  String mm = 'MM';
-
   TimeOfDay _time = const TimeOfDay(hour: 9, minute: 0);
+
+  String formatTime(TimeOfDay time) {
+    String amOrPm = 'AM';
+    int hour = time.hour;
+    if (hour >= 12) {
+      amOrPm = 'PM';
+      if (hour > 12) {
+        hour -= 12;
+      }
+    }
+    String hourStr = hour.toString().padLeft(2, '0');
+    String minuteStr = time.minute.toString().padLeft(2, '0');
+    return '$hourStr:$minuteStr $amOrPm';
+  }
+
   void onTimeChanged(TimeOfDay newTime) {
     setState(() {
       _time = newTime;
-
-      hh = _time.hour.toString();
-      int inthh = _time.hour.toInt();
-      //To check AM or PM
-      if (_time.hour.toInt() > 11) {
-        amORpm = 'PM';
-      }
-      //To convert to 12 hr format
-      if (_time.hour.toInt() > 12) {
-        inthh = (_time.hour.toInt() - 12);
-        hh = inthh.toString();
-      }
-      //To add 0 at the beginning if time is less than 9
-      if (inthh <= 9) {
-        hh = "0$inthh";
-      }
-
-      mm = _time.minute.toString();
-      pickedTime = "$hh:00 - $amORpm";
     });
   }
 
   String dropdownValue = 'Select';
+  String classDropdownValue = 'Select';
   bool chipSelection = true;
 
   @override
@@ -74,7 +67,7 @@ class _AddClassState extends State<AddClass> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
                         Text(
-                          "BCA/5/B",
+                          "COMP/AIDS",
                           style: TextStyle(fontSize: 14, color: Colors.black),
                         ),
                         SizedBox(
@@ -196,6 +189,49 @@ class _AddClassState extends State<AddClass> {
                         Row(
                           children: [
                             const Text(
+                              "Class: ",
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            DropdownButton(
+                                isDense: true,
+                                borderRadius: BorderRadius.circular(30),
+                                hint: Text(
+                                  classDropdownValue,
+                                  style: const TextStyle(
+                                      color: ThemeColor.primary,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                items: ['SE COMP A', 'SE COMP B', 'SE AIDS A']
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e,
+                                        child: Center(
+                                          child: Text(
+                                            e,
+                                            style: const TextStyle(
+                                                color: ThemeColor.primary,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    classDropdownValue = value.toString();
+                                  });
+                                }),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Text(
                               "Mode: ",
                               style: TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.bold),
@@ -253,13 +289,13 @@ class _AddClassState extends State<AddClass> {
                                     is24HrFormat: false,
                                     iosStylePicker: true,
                                     context: context,
-                                    value: _time,
+                                    value: timeOfDayToTime(_time),
                                     onChange: onTimeChanged,
                                   ),
                                 );
                               },
                               child: Text(
-                                pickedTime,
+                                formatTime(_time),
                                 style: const TextStyle(
                                     color: ThemeColor.primary,
                                     fontSize: 15,
@@ -274,12 +310,13 @@ class _AddClassState extends State<AddClass> {
                               String dateForDB =
                                   "${dateToday.year}/${dateToday.month}/${dateToday.day}/$dropdownValue";
 
-                              final classReferance = dbReference
+                              final classReference = dbReference
                                   .child('class/timetable/$dateForDB');
-                              classReferance.set({
+                              classReference.set({
                                 'subject': dropdownValue,
+                                'class': classDropdownValue,
                                 'mode': chipSelection,
-                                'time': pickedTime,
+                                'time': formatTime(_time),
                                 'isnottaken': true,
                                 'islistening': false
                               }).then((value) => Navigator.pop(context));
@@ -295,4 +332,8 @@ class _AddClassState extends State<AddClass> {
       ),
     );
   }
+}
+
+Time timeOfDayToTime(TimeOfDay timeOfDay) {
+  return Time(hour: timeOfDay.hour, minute: timeOfDay.minute);
 }

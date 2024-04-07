@@ -127,7 +127,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                       color: ThemeColor.white),
                                 ),
                                 const Text(
-                                  "BCA/5/B",
+                                  "COMP/AIDS",
                                   style: TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.w400,

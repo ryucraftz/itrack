@@ -29,7 +29,7 @@ class _ViewIaMarksState extends State<ViewIaMarks> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text(
-                        "BCA/5/B",
+                        "SE/COMP/B",
                         style: TextStyle(fontSize: 14, color: ThemeColor.black),
                       ),
                       SizedBox(

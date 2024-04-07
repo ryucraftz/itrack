@@ -10,12 +10,14 @@ String timeOfClass = 'time';
 
 //SUBJECTS FOR COUNTING CLASSES
 List<String> subjects = [
-  'C++',
-  'Dart',
-  'Java',
-  'Javascript',
-  'Python',
-  'Swift'
+  'DSA',
+  'M3',
+  'PPL',
+  'MP',
+  'SE',
+  'IOT',
+  'MIS',
+  'STATS'
 ];
 
 List subjectsAttendance = [];

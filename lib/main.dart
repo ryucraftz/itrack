@@ -5,7 +5,14 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:itrack/admin/add_class.dart';
+import 'package:itrack/admin/admin_dashb.dart';
+import 'package:itrack/admin/student_list.dart';
+import 'package:itrack/admin/view_classes.dart';
 import 'package:itrack/firebase_options.dart';
+import 'package:itrack/screens/login_page.dart';
+import 'package:itrack/screens/signup_page.dart';
+import 'package:itrack/user/user_dashb.dart';
 import 'package:location/location.dart' as loc;
 import 'package:itrack/services/auth_service.dart';
 import 'package:itrack/services/wrapper.dart';
@@ -71,7 +78,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'itrack',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: Wrapper(),
+        home: const AdminDashboard(),
       ),
     );
   }
