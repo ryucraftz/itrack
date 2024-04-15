@@ -15,6 +15,11 @@ class StudentList extends StatefulWidget {
 class _StudentListState extends State<StudentList> {
   final database = dbReference.child("users");
 
+  String selectedClassFilter = ''; // Default selected class filter
+  String selectedClass = 'SE COMP A'; // Default selected class
+  final TextEditingController idController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +37,7 @@ class _StudentListState extends State<StudentList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
                         Text(
-                          "SE/COMP/B",
+                          "SE",
                           style: TextStyle(fontSize: 14, color: Colors.black),
                         ),
                         SizedBox(
@@ -67,104 +72,237 @@ class _StudentListState extends State<StudentList> {
                 const SizedBox(
                   height: 20,
                 ),
+                // Add Student Button with Dropdown
+                ElevatedButton(
+                  onPressed: () {
+                    _showAddStudentModal(context);
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Add Student'),
+                      SizedBox(width: 10),
+                      DropdownButton<String>(
+                        value: selectedClass,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedClass = newValue!;
+                          });
+                        },
+                        items: <String>['SE COMP A', 'SE COMP B', 'SE AIDS A']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  'List',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                // Student list
                 FirebaseAnimatedList(
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics: NeverScrollableScrollPhysics(),
                   query: database,
                   shrinkWrap: true,
-                  defaultChild: const Center(
+                  defaultChild: Center(
                     child: CircularProgressIndicator(),
                   ),
                   itemBuilder: (context, snapshot, animation, index) {
                     String userID = 'UID';
-                    Future<String> databaseNameValue() async {
+                    Future<Map<dynamic, dynamic>> databaseData() async {
                       userID = snapshot.key.toString();
-                      // DatabaseReference ref =
-                      //     FirebaseDatabase.instance.ref("users/$userID/name");
-                      DataSnapshot userName =
-                          await dbReference.child("users/$userID/name").get();
-                      String userNameDB = userName.value.toString();
-                      return userNameDB;
+                      DataSnapshot userSnapshot =
+                          await dbReference.child("users/$userID").get();
+                      if (userSnapshot.value != null &&
+                          userSnapshot.value is Map<dynamic, dynamic>) {
+                        return userSnapshot.value as Map<dynamic, dynamic>;
+                      } else {
+                        // Return an empty map if the value is null or not of the expected type
+                        return {};
+                      }
                     }
 
                     return FutureBuilder(
-                      future: databaseNameValue(),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          return Column(
-                            children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            color: ThemeColor.shadow,
-                                            blurRadius: 10,
-                                            spreadRadius: 0.1,
-                                            offset: Offset(0, 10)),
-                                      ],
-                                      color: ThemeColor.white,
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(left: 10, top: 2),
-                                    child: ListTile(
-                                      trailing: InkWell(
-                                        onTap: () {
-                                          database.child(userID).remove();
-                                        },
-                                        child: Container(
-                                          width: 70,
-                                          height: 35,
-                                          decoration: BoxDecoration(
-                                              color: ThemeColor.secondary,
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: const Center(
-                                            child: Icon(LineIcons.trash,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                      title: Text(
-                                        "${index + 1}:  ${snapshot.data}",
-                                        style: const TextStyle(
-                                            fontSize: 17,
-                                            color: ThemeColor.black,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return Container(
-                            color: Colors.white,
-                            // alignment: Alignment.bottomCenter,
-                            margin: const EdgeInsets.only(top: 20),
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                backgroundColor: Colors.grey,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    );
+  future: databaseData(),
+  builder: (BuildContext context, AsyncSnapshot<Map<dynamic, dynamic>> snapshot) {
+    if (snapshot.hasData) {
+      String studentClass = snapshot.data!['class'];
+      if (selectedClassFilter.isNotEmpty && selectedClassFilter != studentClass) {
+        return SizedBox(); // If class filter is set and not matching, hide the student
+      }
+      String studentId = snapshot.data!['id']; // Fetching the ID from Firebase
+      return Column(
+        children: [
+          SizedBox(
+            height: 10,
+          ),
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              height: 60,
+              decoration: BoxDecoration(
+                  boxShadow: const [
+                    BoxShadow(
+                        color: ThemeColor.shadow,
+                        blurRadius: 10,
+                        spreadRadius: 0.1,
+                        offset: Offset(0, 10)),
+                  ],
+                  color: ThemeColor.white,
+                  borderRadius: BorderRadius.circular(20)),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10, top: 2),
+                child: ListTile(
+                  trailing: InkWell(
+                    onTap: () {
+                      database.child(userID).remove();
+                    },
+                    child: Container(
+                      width: 70,
+                      height: 35,
+                      decoration: BoxDecoration(
+                          color: ThemeColor.secondary,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: const Center(
+                        child: Icon(LineIcons.trash, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    "$studentId:  ${snapshot.data!['name']}",
+                    style: const TextStyle(
+                        fontSize: 17,
+                        color: ThemeColor.black,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Container(
+        color: Colors.white,
+        margin: const EdgeInsets.only(top: 20),
+        child: const Center(
+          child: CircularProgressIndicator(
+            backgroundColor: Colors.grey,
+            color: Colors.blue,
+          ),
+        ),
+      );
+    }
+  },
+);
+
                   },
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                // Dropdown for filtering students by class
+               DropdownButton<String>(
+  value: selectedClassFilter.isEmpty ? 'SE COMP A' : selectedClassFilter,
+  onChanged: (String? newValue) {
+    setState(() {
+      selectedClassFilter = newValue!;
+    });
+  },
+  items: <String>[
+    'SE COMP A',
+    'SE COMP B',
+    'SE AIDS A',
+  ].map<DropdownMenuItem<String>>((String value) {
+    return DropdownMenuItem<String>(
+      value: value,
+      child: Text(value),
+    );
+  }).toList(),
+),
+
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _showAddStudentModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Add Student',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: idController,
+                decoration: InputDecoration(labelText: 'ID'),
+              ),
+              SizedBox(height: 10),
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: 'Name'),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  _addStudentToDatabase();
+                  Navigator.pop(context); // Close modal
+                },
+                child: Text('Add'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _addStudentToDatabase() {
+    String id = idController.text.trim();
+    String name = nameController.text.trim();
+    if (id.isNotEmpty && name.isNotEmpty) {
+      database.push().set({
+        'id': id,
+        'name': name,
+        'class': selectedClass,
+      });
+      // Clear text fields after adding student
+      idController.clear();
+      nameController.clear();
+    } else {
+      // Show error message if any of the fields are empty
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('ID and Name cannot be empty!'),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 }
