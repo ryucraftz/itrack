@@ -91,7 +91,7 @@ class _TakeAttendanceState extends State<TakeAttendance> {
 
                     Future<String> databaseNameValue() async {
                       DataSnapshot userName =
-                          await dbReference.child("users/$userID/name").get();
+                          await dbReference.child("users/$userID/id").get();
                       String userNameDB = userName.value.toString();
                       return userNameDB;
                     }
