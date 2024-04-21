@@ -10,8 +10,10 @@ import 'package:itrack/admin/admin_dashb.dart';
 import 'package:itrack/admin/student_list.dart';
 import 'package:itrack/admin/view_classes.dart';
 import 'package:itrack/firebase_options.dart';
+import 'package:itrack/screens/loading_screen.dart';
 import 'package:itrack/screens/login_page.dart';
 import 'package:itrack/screens/signup_page.dart';
+import 'package:itrack/screens/start_page.dart';
 import 'package:itrack/user/user_dashb.dart';
 import 'package:location/location.dart' as loc;
 import 'package:itrack/services/auth_service.dart';
@@ -78,7 +80,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'itrack',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: const AdminDashboard(),
+        home: const LoadingScreen(),
       ),
     );
   }
