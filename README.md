@@ -1,4 +1,4 @@
-# SpentWise
+# i-Track
 ![Demo](./assets/itrack2.png)
 
 ## Stack
