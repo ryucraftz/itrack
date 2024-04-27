@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:itrack/screens/start_page.dart';
 import 'package:itrack/screens/login_page.dart';
+import 'package:itrack/screens/loading_screen.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final User? user = FirebaseAuth.instance.currentUser;
-
-    // Return either the StartPage or LoginPage based on the user's authentication status
-    if (user == null) {
-      return const StartPage();
-    } else {
-      return const LoginPage();
-    }
+    return StartPage();
   }
 }

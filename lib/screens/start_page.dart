@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:itrack/models/font_size.dart';
 import 'package:itrack/models/main_button.dart';
+import 'package:itrack/screens/loading_screen.dart';
+import 'package:itrack/screens/login_page.dart';
 import 'package:itrack/services/wrapper.dart';
 
 class StartPage extends StatefulWidget {
@@ -68,7 +70,7 @@ class _StartPageState extends State<StartPage> {
                         Navigator.pushReplacement(
                           context,
                           CupertinoPageRoute(
-                            builder: (context) => Wrapper(),
+                            builder: (context) => LoginPage(),
                           ),
                           result: false,
                         );

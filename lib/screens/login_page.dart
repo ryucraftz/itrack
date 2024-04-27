@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:itrack/admin/admin_dashb.dart';
 import 'package:itrack/models/main_button.dart';
 import 'package:itrack/models/font_size.dart';
 import 'package:itrack/models/colors.dart';
@@ -163,11 +164,30 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 50),
                       MainButton(
                         text: 'Login',
-                        onTap: () {
+                        onTap: () async {
                           if (_formKey.currentState!.validate()) {
-                            authService.signInWithEmailAndPassword(
-                                _emailController.text,
-                                _passwordController.text);
+                            // signInWithEmailAndPassword returns a User? type
+                            var user =
+                                await authService.signInWithEmailAndPassword(
+                                    _emailController.text,
+                                    _passwordController.text);
+
+                            // Check if user is not null (i.e., sign-in was successful)
+                            if (user != null) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AdminDashboard(),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      'Failed to sign in. Please check your credentials.'),
+                                ),
+                              );
+                            }
                           }
                         },
                       ),

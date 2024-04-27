@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'itrack',
         theme: ThemeData(primarySwatch: Colors.blue),
-        home: const LoadingScreen(),
+        home: const StudentList(),
       ),
     );
   }

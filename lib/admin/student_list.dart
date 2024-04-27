@@ -73,32 +73,56 @@ class _StudentListState extends State<StudentList> {
                   height: 20,
                 ),
                 // Add Student Button with Dropdown
-                ElevatedButton(
-                  onPressed: () {
-                    _showAddStudentModal(context);
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Add Student'),
-                      SizedBox(width: 10),
-                      DropdownButton<String>(
-                        value: selectedClass,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedClass = newValue!;
-                          });
-                        },
-                        items: <String>['SE COMP A', 'SE COMP B', 'SE AIDS A']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        _showAddStudentModal(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: ThemeColor.secondary),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'ADD',
+                            style: TextStyle(
+                                color: ThemeColor.white,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(width: 10),
+                          DropdownButton<String>(
+                            dropdownColor: ThemeColor.secondary,
+                            borderRadius: BorderRadius.circular(10),
+                            value: selectedClass,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedClass = newValue!;
+                              });
+                            },
+                            items: <String>[
+                              'SE COMP A',
+                              'SE COMP B',
+                              'SE AIDS A'
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                  style: TextStyle(
+                                      color: ThemeColor.white,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 20,
@@ -137,104 +161,133 @@ class _StudentListState extends State<StudentList> {
                     }
 
                     return FutureBuilder(
-  future: databaseData(),
-  builder: (BuildContext context, AsyncSnapshot<Map<dynamic, dynamic>> snapshot) {
-    if (snapshot.hasData) {
-      String studentClass = snapshot.data!['class'];
-      if (selectedClassFilter.isNotEmpty && selectedClassFilter != studentClass) {
-        return SizedBox(); // If class filter is set and not matching, hide the student
-      }
-      String studentId = snapshot.data!['id']; // Fetching the ID from Firebase
-      return Column(
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              height: 60,
-              decoration: BoxDecoration(
-                  boxShadow: const [
-                    BoxShadow(
-                        color: ThemeColor.shadow,
-                        blurRadius: 10,
-                        spreadRadius: 0.1,
-                        offset: Offset(0, 10)),
-                  ],
-                  color: ThemeColor.white,
-                  borderRadius: BorderRadius.circular(20)),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10, top: 2),
-                child: ListTile(
-                  trailing: InkWell(
-                    onTap: () {
-                      database.child(userID).remove();
-                    },
-                    child: Container(
-                      width: 70,
-                      height: 35,
-                      decoration: BoxDecoration(
-                          color: ThemeColor.secondary,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: const Center(
-                        child: Icon(LineIcons.trash, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  title: Text(
-                    "$studentId:  ${snapshot.data!['name']}",
-                    style: const TextStyle(
-                        fontSize: 17,
-                        color: ThemeColor.black,
-                        fontWeight: FontWeight.w600),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    } else {
-      return Container(
-        color: Colors.white,
-        margin: const EdgeInsets.only(top: 20),
-        child: const Center(
-          child: CircularProgressIndicator(
-            backgroundColor: Colors.grey,
-            color: Colors.blue,
-          ),
-        ),
-      );
-    }
-  },
-);
-
+                      future: databaseData(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Map<dynamic, dynamic>> snapshot) {
+                        if (snapshot.hasData) {
+                          String studentClass = snapshot.data!['class'];
+                          if (selectedClassFilter.isNotEmpty &&
+                              selectedClassFilter != studentClass) {
+                            return SizedBox(); // If class filter is set and not matching, hide the student
+                          }
+                          String studentId = snapshot
+                              .data!['id']; // Fetching the ID from Firebase
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () {},
+                                child: Container(
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: ThemeColor.shadow,
+                                            blurRadius: 10,
+                                            spreadRadius: 0.1,
+                                            offset: Offset(0, 10)),
+                                      ],
+                                      color: ThemeColor.white,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 10, top: 2),
+                                    child: ListTile(
+                                      trailing: InkWell(
+                                        onTap: () {
+                                          database.child(userID).remove();
+                                        },
+                                        child: Container(
+                                          width: 70,
+                                          height: 35,
+                                          decoration: BoxDecoration(
+                                              color: ThemeColor.secondary,
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                          child: const Center(
+                                            child: Icon(LineIcons.trash,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        "$studentId:  ${snapshot.data!['name']}",
+                                        style: const TextStyle(
+                                            fontSize: 17,
+                                            color: ThemeColor.black,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Container(
+                            color: Colors.white,
+                            margin: const EdgeInsets.only(top: 20),
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.grey,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    );
                   },
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 40,
                 ),
-                // Dropdown for filtering students by class
-               DropdownButton<String>(
-  value: selectedClassFilter.isEmpty ? 'SE COMP A' : selectedClassFilter,
-  onChanged: (String? newValue) {
-    setState(() {
-      selectedClassFilter = newValue!;
-    });
-  },
-  items: <String>[
-    'SE COMP A',
-    'SE COMP B',
-    'SE AIDS A',
-  ].map<DropdownMenuItem<String>>((String value) {
-    return DropdownMenuItem<String>(
-      value: value,
-      child: Text(value),
-    );
-  }).toList(),
-),
-
+                //
+                //Dropdown for filtering students by class
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          color: ThemeColor.secondary,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: DropdownButton<String>(
+                        dropdownColor: ThemeColor.secondary,
+                        borderRadius: BorderRadius.circular(10),
+                        value: selectedClassFilter.isEmpty
+                            ? 'SE COMP A'
+                            : selectedClassFilter,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedClassFilter = newValue!;
+                          });
+                        },
+                        items: <String>[
+                          'SE COMP A',
+                          'SE COMP B',
+                          'SE AIDS A',
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: Text(
+                                value,
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                  color: ThemeColor.white,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -256,9 +309,9 @@ class _StudentListState extends State<StudentList> {
               Text(
                 'Add Student',
                 style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: ThemeColor.secondary),
               ),
               SizedBox(height: 20),
               TextField(
@@ -276,7 +329,12 @@ class _StudentListState extends State<StudentList> {
                   _addStudentToDatabase();
                   Navigator.pop(context); // Close modal
                 },
-                child: Text('Add'),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: ThemeColor.secondary),
+                child: Text(
+                  'Add',
+                  style: TextStyle(color: ThemeColor.white),
+                ),
               ),
             ],
           ),
