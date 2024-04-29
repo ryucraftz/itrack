@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:itrack/main.dart';
 import 'package:itrack/models/colors.dart';
@@ -73,57 +74,6 @@ class _StudentListState extends State<StudentList> {
                   height: 20,
                 ),
                 // Add Student Button with Dropdown
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _showAddStudentModal(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: ThemeColor.secondary),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'ADD',
-                            style: TextStyle(
-                                color: ThemeColor.white,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w600),
-                          ),
-                          SizedBox(width: 10),
-                          DropdownButton<String>(
-                            dropdownColor: ThemeColor.secondary,
-                            borderRadius: BorderRadius.circular(10),
-                            value: selectedClass,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedClass = newValue!;
-                              });
-                            },
-                            items: <String>[
-                              'SE COMP A',
-                              'SE COMP B',
-                              'SE AIDS A'
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                  style: TextStyle(
-                                      color: ThemeColor.white,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -137,125 +87,16 @@ class _StudentListState extends State<StudentList> {
                 SizedBox(
                   height: 10,
                 ),
-                // Student list
-                FirebaseAnimatedList(
-                  physics: NeverScrollableScrollPhysics(),
-                  query: database,
-                  shrinkWrap: true,
-                  defaultChild: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  itemBuilder: (context, snapshot, animation, index) {
-                    String userID = 'UID';
-                    Future<Map<dynamic, dynamic>> databaseData() async {
-                      userID = snapshot.key.toString();
-                      DataSnapshot userSnapshot =
-                          await dbReference.child("users/$userID").get();
-                      if (userSnapshot.value != null &&
-                          userSnapshot.value is Map<dynamic, dynamic>) {
-                        return userSnapshot.value as Map<dynamic, dynamic>;
-                      } else {
-                        // Return an empty map if the value is null or not of the expected type
-                        return {};
-                      }
-                    }
-
-                    return FutureBuilder(
-                      future: databaseData(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<Map<dynamic, dynamic>> snapshot) {
-                        if (snapshot.hasData) {
-                          String studentClass = snapshot.data!['class'];
-                          if (selectedClassFilter.isNotEmpty &&
-                              selectedClassFilter != studentClass) {
-                            return SizedBox(); // If class filter is set and not matching, hide the student
-                          }
-                          String studentId = snapshot
-                              .data!['id']; // Fetching the ID from Firebase
-                          return Column(
-                            children: [
-                              SizedBox(
-                                height: 10,
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Container(
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                      boxShadow: const [
-                                        BoxShadow(
-                                            color: ThemeColor.shadow,
-                                            blurRadius: 10,
-                                            spreadRadius: 0.1,
-                                            offset: Offset(0, 10)),
-                                      ],
-                                      color: ThemeColor.white,
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.only(left: 10, top: 2),
-                                    child: ListTile(
-                                      trailing: InkWell(
-                                        onTap: () {
-                                          database.child(userID).remove();
-                                        },
-                                        child: Container(
-                                          width: 70,
-                                          height: 35,
-                                          decoration: BoxDecoration(
-                                              color: ThemeColor.secondary,
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: const Center(
-                                            child: Icon(LineIcons.trash,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                      title: Text(
-                                        "$studentId:  ${snapshot.data!['name']}",
-                                        style: const TextStyle(
-                                            fontSize: 17,
-                                            color: ThemeColor.black,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return Container(
-                            color: Colors.white,
-                            margin: const EdgeInsets.only(top: 20),
-                            child: const Center(
-                              child: CircularProgressIndicator(
-                                backgroundColor: Colors.grey,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                //
-                //Dropdown for filtering students by class
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                          color: ThemeColor.secondary,
-                          borderRadius: BorderRadius.circular(10)),
+                          color: ThemeColor.primary,
+                          borderRadius: BorderRadius.circular(30)),
                       child: DropdownButton<String>(
-                        dropdownColor: ThemeColor.secondary,
-                        borderRadius: BorderRadius.circular(10),
+                        dropdownColor: ThemeColor.primary,
+                        borderRadius: BorderRadius.circular(30),
                         value: selectedClassFilter.isEmpty
                             ? 'SE COMP A'
                             : selectedClassFilter,
@@ -272,7 +113,7 @@ class _StudentListState extends State<StudentList> {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Padding(
-                              padding: const EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(10),
                               child: Text(
                                 value,
                                 style: TextStyle(
@@ -288,6 +129,126 @@ class _StudentListState extends State<StudentList> {
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: 30,
+                ),
+                FirebaseAnimatedList(
+  physics: NeverScrollableScrollPhysics(),
+  query: database,
+  shrinkWrap: true,
+  defaultChild: Center(
+    child: CircularProgressIndicator(),
+  ),
+  itemBuilder: (context, snapshot, animation, index) {
+    String userID = 'UID';
+    Future<Map<dynamic, dynamic>> databaseData() async {
+      userID = snapshot.key.toString();
+      DataSnapshot userSnapshot =
+          await dbReference.child("users/$userID").get();
+      if (userSnapshot.value != null &&
+          userSnapshot.value is Map<dynamic, dynamic>) {
+        return userSnapshot.value as Map<dynamic, dynamic>;
+      } else {
+        // Return an empty map if the value is null or not of the expected type
+        return {};
+      }
+    }
+
+    return FutureBuilder(
+      future: databaseData(),
+      builder: (BuildContext context,
+          AsyncSnapshot<Map<dynamic, dynamic>> snapshot) {
+        if (snapshot.hasData) {
+          String studentClass = snapshot.data!['class'];
+          if (selectedClassFilter.isNotEmpty &&
+              selectedClassFilter != studentClass) {
+            return SizedBox(); // If class filter is set and not matching, hide the student
+          }
+          String studentId = snapshot.data!['id']; // Fetching the ID from Firebase
+          return Column(
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  height: 60,
+                  decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                            color: ThemeColor.shadow,
+                            blurRadius: 10,
+                            spreadRadius: 0.1,
+                            offset: Offset(0, 10)),
+                      ],
+                      color: ThemeColor.white,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(left: 10, top: 2),
+                    child: ListTile(
+                      trailing: InkWell(
+                        onTap: () {
+                          database.child(userID).remove();
+                        },
+                        child: Container(
+                          width: 70,
+                          height: 35,
+                          decoration: BoxDecoration(
+                              color: ThemeColor.secondary,
+                              borderRadius:
+                                  BorderRadius.circular(20)),
+                          child: const Center(
+                            child: Icon(LineIcons.trash,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        "$studentId:  ${snapshot.data!['name']}",
+                        style: const TextStyle(
+                            fontSize: 17,
+                            color: ThemeColor.black,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        } else {
+          // Display CircularProgressIndicator when waiting for data
+          if (userID.isEmpty) {
+            return Container(
+              color: Colors.white,
+              margin: const EdgeInsets.only(top: 20),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.grey,
+                  color: Colors.blue,
+                ),
+              ),
+            );
+          } else {
+            // Display a placeholder while loading data from Firebase
+            return SizedBox(
+              height: 60, // Adjust height as needed
+              child: Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.grey,
+                  color: Colors.blue,
+                ),
+              ),
+            );
+          }
+        }
+      },
+    );
+  },
+)
+
               ],
             ),
           ),
@@ -295,72 +256,6 @@ class _StudentListState extends State<StudentList> {
       ),
     );
   }
-
-  void _showAddStudentModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Add Student',
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: ThemeColor.secondary),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                controller: idController,
-                decoration: InputDecoration(labelText: 'ID'),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(labelText: 'Name'),
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  _addStudentToDatabase();
-                  Navigator.pop(context); // Close modal
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: ThemeColor.secondary),
-                child: Text(
-                  'Add',
-                  style: TextStyle(color: ThemeColor.white),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _addStudentToDatabase() {
-    String id = idController.text.trim();
-    String name = nameController.text.trim();
-    if (id.isNotEmpty && name.isNotEmpty) {
-      database.push().set({
-        'id': id,
-        'name': name,
-        'class': selectedClass,
-      });
-      // Clear text fields after adding student
-      idController.clear();
-      nameController.clear();
-    } else {
-      // Show error message if any of the fields are empty
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('ID and Name cannot be empty!'),
-        backgroundColor: Colors.red,
-      ));
-    }
-  }
+    
+  
 }

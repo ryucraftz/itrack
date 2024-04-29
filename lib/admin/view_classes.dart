@@ -2,6 +2,7 @@ import 'package:dialogs/dialogs/message_dialog.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:itrack/admin/take_attendance.dart';
+import 'package:itrack/admin/view_attendance.dart';
 import 'package:itrack/main.dart';
 import 'package:itrack/models/colors.dart';
 import 'package:itrack/models/globals.dart' as globals;
@@ -141,6 +142,28 @@ class _ViewClassesState extends State<ViewClasses> {
                                     height: 35,
                                     decoration: BoxDecoration(
                                         color: ThemeColor.green,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: const Center(
+                                      child: Icon(LineIcons.paperPlane,
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ViewAttendance()),
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 70,
+                                    height: 35,
+                                    decoration: BoxDecoration(
+                                        color: ThemeColor.primary,
                                         borderRadius:
                                             BorderRadius.circular(20)),
                                     child: const Center(

@@ -48,6 +48,8 @@ dependencies:
   dialogs: ^0.0.7
   expandable: ^5.0.1
   firebase_auth: ^4.19.0
+  cloud_firestore: ^4.17.2
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:

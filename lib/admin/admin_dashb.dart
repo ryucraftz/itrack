@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:itrack/admin/add_class.dart';
+import 'package:itrack/admin/add_student.dart';
 import 'package:itrack/admin/student_list.dart';
 import 'package:itrack/admin/view_classes.dart';
 import 'package:itrack/main.dart';
@@ -197,6 +198,58 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
                   const SizedBox(
                     height: 30,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: 60,
+                    decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(
+                              color: ThemeColor.shadow,
+                              blurRadius: 10,
+                              spreadRadius: 0.1,
+                              offset: Offset(0, 10)),
+                        ],
+                        color: ThemeColor.white,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Add Student",
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: ThemeColor.black,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const AddStudent()),
+                              );
+                            },
+                            child: Container(
+                              width: 70,
+                              height: 35,
+                              decoration: BoxDecoration(
+                                  color: ThemeColor.secondary,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: const Center(
+                                child:
+                                    Icon(LineIcons.plus, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   Container(
                     width: double.infinity,

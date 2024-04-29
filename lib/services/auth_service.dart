@@ -56,4 +56,5 @@ class AuthService {
       throw Exception('Failed to add class to the database');
     }
   }
+  
 }

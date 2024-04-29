@@ -18,10 +18,22 @@ class _TakeAttendanceState extends State<TakeAttendance> {
   final database = dbReference.child("users");
   String userID = 'UID';
   int numberOfStudents = 0;
-  // Map<int, String> absentOrPresent = {};
-  // Map<int, String> absentOrPresentUID = {};
   List<bool> isPresent = [];
   List<String> isPresentUID = [];
+
+  void attendanceFetch() {
+    String year = dateToday.year.toString();
+    String month = dateToday.month.toString();
+    String day = dateToday.day.toString();
+
+    for (int i = 0; i < isPresent.length; i++) {
+      int attendanceValue = isPresent[i] ? 1 : 0;
+      String studentId = isPresentUID[i];
+      String attendancePath =
+          "users/$studentId/$year/$month/$day/${globals.selSubforAttendance}";
+      dbReference.child(attendancePath).set(attendanceValue);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +92,9 @@ class _TakeAttendanceState extends State<TakeAttendance> {
                   physics: const NeverScrollableScrollPhysics(),
                   query: database,
                   shrinkWrap: true,
+                  defaultChild: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                   itemBuilder: (context, snapshot, animation, index) {
                     userID = snapshot.key.toString();
 
@@ -206,45 +221,5 @@ class _TakeAttendanceState extends State<TakeAttendance> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
-  }
-
-  Future<bool?> attendanceFetch() async {
-    int i = 0;
-    String userIDAF = 'n';
-    // String databaseRefTo =
-    //     "class/timetable/${dateToday.year}/${dateToday.month}/${dateToday.day}/${globals.selSubforAttendance}";
-    // final databaseattislistening =
-    dbReference
-        .child(
-            "class/timetable/${dateToday.year}/${dateToday.month}/${dateToday.day}/${globals.selSubforAttendance}/islistening")
-        .set(false);
-    // databaseattislistening.set(false);
-    //To increment classes
-    DatabaseReference classRef = dbReference.child(
-        "class/numberofclass/${globals.selSubforAttendance.toLowerCase()}");
-    DataSnapshot subSnapshot = await classRef.get();
-    int numOfClass = int.parse(subSnapshot.value.toString());
-    if (numOfClass > 0) {
-      classRef.set(numOfClass + 1);
-    } else {
-      classRef.set(1);
-    }
-
-    //To add attendance
-    while (i < numberOfStudents + 1) {
-      userIDAF = isPresentUID[i];
-
-      if (isPresent[i] == true) {
-        DatabaseReference ref = dbReference.child(
-            "users/$userIDAF/class/${globals.selSubforAttendance.toLowerCase()}");
-        DataSnapshot isAdminDB = await ref.get();
-        int numOfAttendance = int.parse(isAdminDB.value.toString());
-        ref.set(numOfAttendance + 1);
-      }
-
-      i++;
-    }
-
-    return false;
   }
 }
