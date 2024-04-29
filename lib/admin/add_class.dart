@@ -74,7 +74,7 @@ class _AddClassState extends State<AddClass> {
                           height: 5,
                         ),
                         Text(
-                          'Create Class',
+                          'Add Lecture',
                           style: TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
